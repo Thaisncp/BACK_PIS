@@ -19,7 +19,7 @@ class CuentaController {
                 include: {
                     model: persona,
                     as: 'persona',
-                    attributes: ['apellidos', 'nombres', 'external_id']
+                    attributes: ['apellidos', 'nombres', 'external_id', 'rol']
                 }
             });
             if (login === null) {

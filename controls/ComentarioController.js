@@ -2,6 +2,7 @@
 const { body, validationResult } = require('express-validator');
 const models = require('../models/');
 const comentario = models.comentario;
+const persona = models.persona;
 const Sentiment = require('sentiment');
 
 function analizarComentario(comentario) {
@@ -42,10 +43,17 @@ class ComentarioController {
                 res.status(400).json({ msg: "DATOS FALTANTES", code: 400, errors: errors.array() });
                 return;
             }
+
+            const user = await persona.findOne({ where: {external_id: req.body.external_persona} });
+            console.log(user);
+            if (user == null) {
+                res.status(400).json({ msg: "NO EXISTE PERSONA", code: 400 });
+            }
             const resultado = analizarComentario(req.body.comentario);
             const data = {
                 coment: req.body.comentario,
-                sentimiento: getSentimentEmoji(resultado.score)
+                sentimiento: getSentimentEmoji(resultado.score),
+                usuario: user.nombres
             };
 
             console.log(data);
