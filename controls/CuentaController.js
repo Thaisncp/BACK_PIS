@@ -54,6 +54,7 @@ class CuentaController {
                                 msg: "Bienvenid@ " + login.persona.nombres + ' ' + login.persona.apellidos,
                                 correo: login.correo,
                                 rol: login.persona.rol,
+                                external: login.persona.external_id,
                                 //info: login,
                                 code: 200
                             }
