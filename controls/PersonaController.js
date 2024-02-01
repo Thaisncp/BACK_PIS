@@ -83,5 +83,66 @@ class PersonaController {
             res.status(500).json({ msg: "Error interno del servidor", code: 500 });
         }
     }
+
+    async guardarAdmin(req, res) {
+        try {
+            const errors = validationResult(req);
+
+            if (!errors.isEmpty()) {
+                res.status(400).json({ msg: "DATOS FALTANTES", code: 400, errors: errors });
+                return;
+            }
+
+            const claveHash = (clave) => bcypt.hashSync(clave, bcypt.genSaltSync(salRounds), null);
+
+            const correoAux = req.body.correo;
+
+            // Validar Datos duplicados en la Base de datos
+            const correoExistente = await models.cuenta.findOne({ where: { correo: correoAux } });
+
+            if (correoExistente) {
+                res.json({ msg: "Correo ya existente", code: 500 });
+                return;
+          }
+
+            const data = {
+                nombres: req.body.nombres,
+                apellidos: req.body.apellidos,
+                direccion: req.body.direccion,
+                fecha_nacimiento: req.body.fecha_nacimiento,
+                ocupacion: req.body.ocupacion,
+                organizacion: req.body.organizacion,
+                rol: "ADMINISTRADOR",
+                cuenta: { correo: req.body.correo, clave: claveHash(req.body.clave), estado: "ACEPTADO" }
+            };
+
+            console.log(data);
+
+            let transaction = await models.sequelize.transaction();
+
+            try {
+                // Crear usuario en la base de datos
+                await models.persona.create(data, {
+                    include: [
+                        { model: models.cuenta, as: "cuenta" },
+                    ],
+                    transaction
+                });
+
+                await transaction.commit();
+                res.status(200).json({ msg: "USUARIO CREADO CON EXITO", code: 200 });
+               
+            } catch (error) {
+                if (transaction) await transaction.rollback();
+                const errorMsg = error.errors && error.errors[0] && error.errors[0].message
+                    ? error.errors[0].message
+                    : error.message;
+                res.json({ msg: errorMsg, code: 200 });
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ msg: "Error interno del servidor", code: 500 });
+        }
+    }
 }
 module.exports = PersonaController;
