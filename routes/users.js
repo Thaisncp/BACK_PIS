@@ -68,7 +68,8 @@ router.post('/persona/save', [
 router.get('/persona/list', personaController.listar);
 //------------COMENTARIO------------
 router.post('/comentario/save', [
-  body('comentario', 'Ingrese un comentario').trim().exists().not().isEmpty().isLength({ min: 3, max: 200 }).withMessage("Ingrese un valor mayor o igual a 3 y menor a 200")
+  body('comentario', 'Ingrese un comentario').trim().exists().not().isEmpty().isLength({ min: 3, max: 200 }).withMessage("Ingrese un valor mayor o igual a 3 y menor a 200"),
+  body('satisfaccion', 'Ingrese un comentario').trim().exists().not().isEmpty().isLength({ min: 1, max: 5}).withMessage("Ingrese un emoji")
 ], comentarioController.guardar);
 router.get('/comentario/list', comentarioController.listar);
 module.exports = router;

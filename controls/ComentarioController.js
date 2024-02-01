@@ -22,11 +22,28 @@ function getSentimentEmoji(score) {
     }
 }
 
+function getNombreEmoji(emoji) {
+    switch (emoji) {
+      case '😁':
+        return '😁 Muy Satisfecho';
+      case '😊':
+        return '😊 Satisfecho';
+      case '😐':
+        return '😐 Neutro';
+      case '😔':
+        return '😔 Poco Satisfecho';
+      case '😡':
+        return '😡 Muy Insatisfecho';
+      default:
+        return '';
+    }
+  }
+
 class ComentarioController {
     async listar(req, res) {
         try {
             const listar = await comentario.findAll({
-                attributes: ['coment', 'sentimiento', 'usuario','createdAt'] // Cambiado 'createAt' a 'createdAt'
+                attributes: ['coment', 'satisfaccion', 'sentimiento', 'usuario','createdAt'] // Cambiado 'createAt' a 'createdAt'
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
         } catch (error) {
@@ -53,7 +70,8 @@ class ComentarioController {
             const data = {
                 coment: req.body.comentario,
                 sentimiento: getSentimentEmoji(resultado.score),
-                usuario: user.nombres
+                usuario: user.nombres,
+                satisfaccion: getNombreEmoji(req.body.emoji)
             };
 
             console.log(data);
