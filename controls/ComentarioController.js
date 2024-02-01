@@ -4,6 +4,7 @@ const models = require('../models/');
 const comentario = models.comentario;
 const persona = models.persona;
 const Sentiment = require('sentiment');
+const translate = require('node-google-translate-skidz');
 
 function analizarComentario(comentario) {
     const sentiment = new Sentiment();
@@ -11,6 +12,22 @@ function analizarComentario(comentario) {
     console.log('Resultado del análisis:', resultado);
     return resultado;
 }
+
+async function traducirTextoOffline(texto, targetLanguage) {
+    return new Promise((resolve, reject) => {
+      translate({
+        text: texto,
+        source: 'es',
+        target: targetLanguage
+      }, (result) => {
+        if (result && result.translation) {
+          resolve(result.translation);
+        } else {
+          reject(new Error('Error al traducir el texto.'));
+        }
+      });
+    });
+  }
 
 function getSentimentEmoji(score) {
     if (score > 0) {
@@ -21,23 +38,6 @@ function getSentimentEmoji(score) {
         return '😐 Neutro';
     }
 }
-
-function getNombreEmoji(emoji) {
-    switch (emoji) {
-      case '😁':
-        return '😁 Muy Satisfecho';
-      case '😊':
-        return '😊 Satisfecho';
-      case '😐':
-        return '😐 Neutro';
-      case '😔':
-        return '😔 Poco Satisfecho';
-      case '😡':
-        return '😡 Muy Insatisfecho';
-      default:
-        return '';
-    }
-  }
 
 class ComentarioController {
     async listar(req, res) {
@@ -66,12 +66,13 @@ class ComentarioController {
             if (user == null) {
                 res.status(400).json({ msg: "NO EXISTE PERSONA", code: 400 });
             }
-            const resultado = analizarComentario(req.body.comentario);
+            const comentarioTraducido = await traducirTextoOffline(req.body.comentario, 'en');
+            const resultado = analizarComentario(comentarioTraducido);
             const data = {
                 coment: req.body.comentario,
                 sentimiento: getSentimentEmoji(resultado.score),
                 usuario: user.nombres,
-                satisfaccion: getNombreEmoji(req.body.emoji)
+                satisfaccion: req.body.satisfaccion
             };
 
             console.log(data);
