@@ -7,6 +7,8 @@ const PersonaController = require('../controls/PersonaController');
 var personaController =new PersonaController();
 const CuentaController = require('../controls/CuentaController');
 var cuentaController =new CuentaController();
+const ComentarioController = require('../controls/ComentarioController');
+var comentarioController =new ComentarioController();
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('respond with a resource');
@@ -64,7 +66,9 @@ router.post('/persona/save', [
   body('nombres', 'Ingrese sus nombres').trim().exists().not().isEmpty().isLength({ min: 3, max: 50 }).withMessage("Ingrese un valor mayor o igual a 3 y menor a 50"),
 ], personaController.guardar);
 router.get('/persona/list', personaController.listar);
-
-
-
+//------------COMENTARIO------------
+router.post('/comentario/save', [
+  body('comentario', 'Ingrese un comentario').trim().exists().not().isEmpty().isLength({ min: 3, max: 200 }).withMessage("Ingrese un valor mayor o igual a 3 y menor a 200")
+], comentarioController.guardar);
+router.get('/comentario/list', comentarioController.listar);
 module.exports = router;
