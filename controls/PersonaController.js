@@ -22,6 +22,51 @@ class PersonaController {
         });
         res.json({ msg: 'OK!', code: 200, info: listar });
     }
+
+    async listarEspera(req, res) {
+        try {
+            var listar = await persona.findAll({
+                attributes: ['apellidos', 'nombres', 'external_id', 'direccion', 'fecha_nacimiento', 'direccion', 'ocupacion', 'organizacion', 'rol'],
+                include: {
+                    model: cuenta,
+                    as: 'cuenta',
+                    attributes: ['external_id', 'correo', 'estado']
+                },
+                where: {
+                    '$cuenta.estado$': 'ESPERA',
+                    rol: 'USUARIO'
+                }
+            });
+    
+            res.json({ msg: 'OK!', code: 200, info: listar });
+        } catch (error) {
+            console.error('Error al listar personas en espera:', error);
+            res.status(500).json({ msg: 'Error interno del servidor', code: 500 });
+        }
+    }
+    
+
+    async listarAceptado(req, res) {
+        try {
+            var listar = await persona.findAll({
+                attributes: ['apellidos', 'nombres', 'external_id', 'direccion', 'fecha_nacimiento', 'direccion', 'ocupacion', 'organizacion', 'rol'],
+                include: {
+                    model: cuenta,
+                    as: 'cuenta',
+                    attributes: ['external_id', 'correo', 'estado']
+                },
+                where: {
+                    '$cuenta.estado$': 'ACEPTADO',
+                    rol: 'USUARIO'
+                }
+            });
+    
+            res.json({ msg: 'OK!', code: 200, info: listar });
+        } catch (error) {
+            console.error('Error al listar personas en espera:', error);
+            res.status(500).json({ msg: 'Error interno del servidor', code: 500 });
+        }
+    }
     
     async guardar(req, res) {
         try {

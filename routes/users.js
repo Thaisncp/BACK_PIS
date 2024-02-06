@@ -70,6 +70,8 @@ router.post('/administrador/save', [
   body('nombres', 'Ingrese sus nombres').trim().exists().not().isEmpty().isLength({ min: 3, max: 50 }).withMessage("Ingrese un valor mayor o igual a 3 y menor a 50"),
 ], personaController.guardarAdmin);
 router.get('/persona/list', personaController.listar);
+router.get('/persona/listaEspera', personaController.listarEspera);
+router.get('/persona/listaAceptado', personaController.listarAceptado);
 //------------COMENTARIO------------
 router.post('/comentario/save', [
   body('comentario', 'Ingrese un comentario').trim().exists().not().isEmpty().isLength({ min: 3, max: 200 }).withMessage("Ingrese un valor mayor o igual a 3 y menor a 200"),
