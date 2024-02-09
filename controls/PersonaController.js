@@ -68,7 +68,7 @@ class PersonaController {
         }
     }
     
-    //METDO DE REGUSTRO DE USUARIOS
+    //METODO DE REGUSTRO DE USUARIOS
     async guardar(req, res) {
         try {
             const errors = validationResult(req);
