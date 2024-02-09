@@ -10,7 +10,7 @@ const salRounds = 8;
 const nodemailer = require("nodemailer");
 
 class PersonaController {
-
+    //LISTA TODO
     async listar(req, res) {
         var listar = await persona.findAll({
             attributes: ['apellidos', 'nombres', 'external_id', 'direccion', 'fecha_nacimiento', 'direccion', 'ocupacion', 'organizacion', 'rol'],
@@ -22,7 +22,7 @@ class PersonaController {
         });
         res.json({ msg: 'OK!', code: 200, info: listar });
     }
-
+    //LISTA USUARIOS EN ESTADO DE ESPERA
     async listarEspera(req, res) {
         try {
             var listar = await persona.findAll({
@@ -45,7 +45,7 @@ class PersonaController {
         }
     }
     
-
+    //LISTA USUARIOS EN ESTADO DE ACEPTADO
     async listarAceptado(req, res) {
         try {
             var listar = await persona.findAll({
@@ -68,6 +68,7 @@ class PersonaController {
         }
     }
     
+    //METDO DE REGUSTRO DE USUARIOS
     async guardar(req, res) {
         try {
             const errors = validationResult(req);
@@ -129,6 +130,8 @@ class PersonaController {
         }
     }
 
+
+    //METODO DE REGISTRO DE ADMINISTRADOR
     async guardarAdmin(req, res) {
         try {
             const errors = validationResult(req);

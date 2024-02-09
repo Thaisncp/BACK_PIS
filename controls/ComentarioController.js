@@ -6,6 +6,8 @@ const persona = models.persona;
 const Sentiment = require('sentiment');
 const translate = require('node-google-translate-skidz');
 
+
+//ANALISIS LEXICO DEL COMENTARIO
 function analizarComentario(comentario) {
     const sentiment = new Sentiment();
     const resultado = sentiment.analyze(comentario);
@@ -13,6 +15,7 @@ function analizarComentario(comentario) {
     return resultado;
 }
 
+//TRADUCCION DEL COMENTARIO A INGLES
 async function traducirTextoOffline(texto, targetLanguage) {
     return new Promise((resolve, reject) => {
       translate({
@@ -29,6 +32,7 @@ async function traducirTextoOffline(texto, targetLanguage) {
     });
   }
 
+//ASIGNAR SENTIMIENTO SEGUN EL RESULTADO DEL ANALISIS
 function getSentimentEmoji(score) {
     if (score > 0) {
         return '😊 Positivo';

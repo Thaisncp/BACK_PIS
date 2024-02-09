@@ -11,6 +11,7 @@ const nodemailer = require("nodemailer");
 
 class CuentaController {
 
+    //CONTROLADOR DE INICIO DE SESION
     async sesion(req, res) {
         let errors = validationResult(req);
         if (errors.isEmpty()) {
@@ -36,7 +37,7 @@ class CuentaController {
                     return bcypt.compareSync(claveUser, clave);
                 }
                 if (login.estado == "ACEPTADO") {
-                    if (isClaveValida(login.clave, req.body.clave)) { //login.clave---BD //req.body.clave---lo que manda el correo
+                    if (isClaveValida(login.clave, req.body.clave)) { 
                         const tokenData = {
                             external: login.external_id,
                             correo: login.correo,
@@ -55,7 +56,6 @@ class CuentaController {
                                 correo: login.correo,
                                 rol: login.persona.rol,
                                 external: login.persona.external_id,
-                                //info: login,
                                 code: 200
                             }
 
@@ -114,6 +114,8 @@ class CuentaController {
         res.status(200);
         res.json({ msg: 'OK!', code: 200, info: cuenta_persona });
     }
+
+    //METODO PARA MODIFICAR ESTADO DE CUENTA
     async modificar_estado(req, res) {
 
         var cuenta_persona = await cuenta.findOne({ where: { external_id: req.body.external_id } });
@@ -161,75 +163,5 @@ class CuentaController {
             }
         }
     }
-
-    async estado_aceptado(req, res) {
-
-        var cuenta_persona = await cuenta.findOne({ where: { external_id: req.body.external_id } });
-        if (cuenta_persona === null) {
-            res.status(400);
-            res.json({
-                msg: "NO EXISTEN REGISTROS",
-                code: 400
-            });
-        } else {
-            var uuid = require('uuid');
-            console.log(cuenta_persona);
-            cuenta_persona.estado = "ACEPTADO";
-            cuenta_persona.external_id = uuid.v4();
-            try {
-                await cuenta_persona.save();
-                res.status(200);
-                if (cuenta_persona.estado == "ACEPTADO") {
-                    res.json({
-                        msg: "LA CUENTA HA SIDO ACEPTADA EXITOSAMENTE",
-                        code: 200
-                    });
-                }
-            } catch (error) {
-                res.status(400);
-                res.json({
-                    msg: "NO SE HA MODIFICADO EL ESTADO DE LA CUENTA",
-                    code: 400,
-                    error: error.message
-                });
-            }
-        }
-    }
-
-    async estado_rechazado(req, res) {
-        var cuenta_persona = await cuenta.findOne({ where: { external_id: req.body.external_id } });
-        if (cuenta_persona === null) {
-            res.status(400);
-            res.json({
-                msg: "NO EXISTEN REGISTROS",
-                code: 400
-            });
-        } else {
-            var uuid = require('uuid');
-            console.log(cuenta_persona);
-            cuenta_persona.estado = "RECHAZADO";
-            cuenta_persona.external_id = uuid.v4();
-            try {
-                await cuenta_persona.save();
-                res.status(200);
-                if (cuenta_persona.estado == "RECHAZADO") {
-                    res.json({
-                        msg: "LA CUENTA HA SIDO RECHAZADA EXITOSAMENTE",
-                        code: 200
-                    });
-                }
-            } catch (error) {
-                res.status(400);
-                res.json({
-                    msg: "NO SE HA MODIFICADO EL ESTADO DE LA CUENTA",
-                    code: 400,
-                    error: error.message
-                });
-            }
-        }
-    }
-
-
-
 }
 module.exports = CuentaController;
