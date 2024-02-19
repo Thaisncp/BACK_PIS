@@ -6,8 +6,8 @@ module.exports = (sequelize, DataTypes) => {
         coment: { type: DataTypes.STRING(200), allowNull: false },
         sentimiento: { type: DataTypes.STRING(50), allowNull: false },
         usuario: { type: DataTypes.STRING(50), allowNull: false },
-        satisfaccion: { type: DataTypes.STRING(50), allowNull: false },
-    }, {
+    }, 
+    {
         freezeTableName: true
     });
     return comentario;

@@ -47,7 +47,7 @@ class ComentarioController {
     async listar(req, res) {
         try {
             const listar = await comentario.findAll({
-                attributes: ['coment', 'satisfaccion', 'sentimiento', 'usuario','createdAt'] // Cambiado 'createAt' a 'createdAt'
+                attributes: ['coment', 'sentimiento', 'usuario','createdAt'] // Cambiado 'createAt' a 'createdAt'
             });
             res.json({ msg: 'OK!', code: 200, info: listar });
         } catch (error) {
@@ -76,7 +76,6 @@ class ComentarioController {
                 coment: req.body.comentario,
                 sentimiento: getSentimentEmoji(resultado.score),
                 usuario: user.nombres,
-                satisfaccion: req.body.satisfaccion
             };
 
             console.log(data);
